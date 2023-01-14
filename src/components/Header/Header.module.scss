@@ -7,27 +7,47 @@
 
 .inner {
   display: flex;
+  align-items: center;
   justify-content: space-between;
+
+  @media (max-width: 510px) {
+    flex-direction: column-reverse;
+  }
 }
 
 .logo {
-  background-color: black;
-  color: #fff;
+  border-radius: 4px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 35px;
   letter-spacing: 0.15px;
-  border-radius: 5px;
-  padding: 0 10px;
+  padding: 0 16px;
   text-decoration: none;
 
-  &:hover {
-    background-color: #4361ee;
+  @media (max-width: 510px) {
+    margin-top: 16px;
+    border: none
+
   }
 }
 
 .buttons {
+  @media (max-width: 510px) {
+    display: flex;
+    justify-content: center;
+  }
+
   button {
     margin-left: 10px;
+
+    @media (max-width: 510px) {
+      margin-left: 0;
+
+      &:first-child {
+        margin-right: 16px;
+
+      }
+    }
   }
 
   a {
