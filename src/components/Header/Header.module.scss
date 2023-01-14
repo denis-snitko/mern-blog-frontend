@@ -32,6 +32,8 @@
 }
 
 .buttons {
+  margin-left: auto;
+
   @media (max-width: 510px) {
     display: flex;
     justify-content: center;
