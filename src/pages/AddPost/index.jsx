@@ -23,10 +23,8 @@ export const AddPost = () => {
   const isEditing = Boolean(id);
   
   const [isLoading, setIsLoading] = useState(false);
-  const [title, setTitle] = useState('');
-  const [tags, setTags] = useState('');
-  const [text, setText] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+  
+  const [post, setPost] = useState();
   
   const inputFileRef = useRef(null);
   
@@ -38,18 +36,20 @@ export const AddPost = () => {
       formData.append('image', file);
       const { data } = await axios.post('/upload', formData);
       const fullImageUrl = `${api}${data.url}`;
-      setImageUrl(fullImageUrl);
+      setPost((prevState) => (
+        { ...prevState, imageUrl: fullImageUrl || '' }
+      ));
     } catch (error) {
       console.log(error);
     }
   };
   
   const onClickRemoveImage = () => {
-    setImageUrl('');
+    setPost((prevState) => ({ ...prevState, imageUrl: '' }));
   };
   
   const onChange = useCallback((value) => {
-    setText(value);
+    setPost((prevState) => ({ ...prevState, text: value }));
   }, []);
   
   const options = useMemo(
@@ -70,7 +70,12 @@ export const AddPost = () => {
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
-      const fields = { title, text, tags: tags ? tags.split(',').filter(Boolean) : [], imageUrl };
+      const fields = {
+        title: post?.title,
+        text: post?.text,
+        tags: post?.tags ? post.tags.split(',').filter(Boolean) : [],
+        imageUrl: post?.imageUrl,
+      };
       
       const { data } = isEditing ? await axios.patch(`/posts/${id}`, fields) : await axios.post('/posts', fields);
       
@@ -85,10 +90,12 @@ export const AddPost = () => {
   useEffect(() => {
     if (!id) return;
     axios.get(`/posts/${id}`).then(res => {
-        setTitle(res.data.title);
-        setText(res.data.text);
-        setTags(res.data.tags ? res.data.tags.join(',') : '');
-        setImageUrl(res.data.imageUrl);
+        setPost({
+          title: res.data.title,
+          text: res.data.text,
+          tags: res.data.tags ? res.data.tags.join(',') : '',
+          imageUrl: res.data.imageUrl,
+        });
       })
       .catch((error) => console.log(error))
       .finally(() => {
@@ -108,14 +115,14 @@ export const AddPost = () => {
             Загрузить превью
           </Button>
           <input type="file" ref={inputFileRef} onChange={handleChangeFile} hidden />
-          {imageUrl && (
+          {post?.imageUrl && (
             <Button disabled={!isAuth} variant="contained" color="error" onClick={onClickRemoveImage}>
               Удалить
             </Button>
           )}
         </div>)
       }
-      {imageUrl && (<img className={styles.image} src={imageUrl} alt="Uploaded" />)}
+      {post?.imageUrl && (<img className={styles.image} src={post.imageUrl} alt="Uploaded" />)}
       <br />
       <br />
       <TextField
@@ -123,18 +130,18 @@ export const AddPost = () => {
         variant="standard"
         placeholder="Заголовок статьи..."
         fullWidth
-        value={title}
-        onChange={(event) => setTitle(event.target.value)}
+        value={post?.title}
+        onChange={(event) => setPost((prevState) => ({ ...prevState, title: event.target.value }))}
       />
       <TextField
         classes={{ root: styles.tags }}
         variant="standard"
         placeholder="Тэги"
         fullWidth
-        value={tags}
-        onChange={(event) => setTags(event.target.value.trim())}
+        value={post?.tags}
+        onChange={(event) => setPost((prevState) => ({ ...prevState, tags: event.target.value.trim() }))}
       />
-      <SimpleMDE className={styles.editor} value={text} onChange={onChange} options={options} />
+      <SimpleMDE className={styles.editor} value={post?.text} onChange={onChange} options={options} />
       <div className={styles.buttons}>
         <Button disabled={!isAuth} size="large" variant="contained" onClick={handleSubmit}>
           {isEditing ? 'Обновить' : 'Опубликовать'}
