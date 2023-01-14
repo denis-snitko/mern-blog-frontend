@@ -1,15 +1,15 @@
-import TextField from "@mui/material/TextField";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
-import SimpleMDE from "react-simplemde-editor";
+import TextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
+import SimpleMDE from 'react-simplemde-editor';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { selectIsAuth } from "../../redux/slices/auth";
-import styles from "./AddPost.module.scss";
-import "easymde/dist/easymde.min.css";
-import axios from "../../axios";
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { selectIsAuth } from '../../redux/slices/auth';
+import styles from './AddPost.module.scss';
+import 'easymde/dist/easymde.min.css';
+import axios from '../../axios';
 
 const { REACT_APP_API } = process.env;
 const api = `${REACT_APP_API}`;
@@ -23,10 +23,10 @@ export const AddPost = () => {
   const isEditing = Boolean(id);
   
   const [isLoading, setIsLoading] = useState(false);
-  const [title, setTitle] = useState("");
-  const [tags, setTags] = useState([]);
-  const [text, setText] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [title, setTitle] = useState('');
+  const [tags, setTags] = useState('');
+  const [text, setText] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   
   const inputFileRef = useRef(null);
   
@@ -35,8 +35,8 @@ export const AddPost = () => {
       const formData = new FormData();
       const file = event.target.files[0];
       
-      formData.append("image", file);
-      const { data } = await axios.post("/upload", formData);
+      formData.append('image', file);
+      const { data } = await axios.post('/upload', formData);
       const fullImageUrl = `${api}${data.url}`;
       setImageUrl(fullImageUrl);
     } catch (error) {
@@ -45,7 +45,7 @@ export const AddPost = () => {
   };
   
   const onClickRemoveImage = () => {
-    setImageUrl("");
+    setImageUrl('');
   };
   
   const onChange = useCallback((value) => {
@@ -55,24 +55,24 @@ export const AddPost = () => {
   const options = useMemo(
     () => ({
       spellChecker: false,
-      maxHeight: "400px",
+      maxHeight: '400px',
       autofocus: true,
-      placeholder: "Введите текст...",
+      placeholder: 'Введите текст...',
       status: false,
       autosave: {
         enabled: true,
-        delay: 1000
-      }
+        delay: 1000,
+      },
     }),
-    []
+    [],
   );
   
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
-      const fields = { title, text, tags: tags ? tags.split(",") : [], imageUrl };
+      const fields = { title, text, tags: tags ? tags.split(',').filter(Boolean) : [], imageUrl };
       
-      const { data } = isEditing ? await axios.patch(`/posts/${id}`, fields) : await axios.post("/posts", fields);
+      const { data } = isEditing ? await axios.patch(`/posts/${id}`, fields) : await axios.post('/posts', fields);
       
       navigate(`/posts/${data._id}`);
     } catch (error) {
@@ -87,7 +87,7 @@ export const AddPost = () => {
     axios.get(`/posts/${id}`).then(res => {
         setTitle(res.data.title);
         setText(res.data.text);
-        setTags(res.data.tags.join(","));
+        setTags(res.data.tags ? res.data.tags.join(',') : '');
         setImageUrl(res.data.imageUrl);
       })
       .catch((error) => console.log(error))
@@ -97,7 +97,7 @@ export const AddPost = () => {
   }, [id]);
   
   if (isLoading) {
-    return <Paper style={{ padding: 30 }} isLoading={isLoading} />
+    return <Paper style={{ padding: 30 }} isLoading={isLoading} />;
   }
   
   return (
@@ -115,7 +115,7 @@ export const AddPost = () => {
           )}
         </div>)
       }
-          {imageUrl && (<img className={styles.image} src={imageUrl} alt="Uploaded" />)}
+      {imageUrl && (<img className={styles.image} src={imageUrl} alt="Uploaded" />)}
       <br />
       <br />
       <TextField
@@ -132,12 +132,12 @@ export const AddPost = () => {
         placeholder="Тэги"
         fullWidth
         value={tags}
-        onChange={(event) => setTags(event.target.value)}
+        onChange={(event) => setTags(event.target.value.trim())}
       />
       <SimpleMDE className={styles.editor} value={text} onChange={onChange} options={options} />
       <div className={styles.buttons}>
         <Button disabled={!isAuth} size="large" variant="contained" onClick={handleSubmit}>
-          {isEditing ? "Обновить" : "Опубликовать"}
+          {isEditing ? 'Обновить' : 'Опубликовать'}
         </Button>
         <Link to="/">
           <Button size="large">Отмена</Button>
