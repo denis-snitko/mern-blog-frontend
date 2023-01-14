@@ -11,8 +11,8 @@ import styles from "./AddPost.module.scss";
 import "easymde/dist/easymde.min.css";
 import axios from "../../axios";
 
-const { REACT_APP_API, REACT_APP_API_PORT } = process.env;
-const api = `${REACT_APP_API}:${REACT_APP_API_PORT}`;
+const { REACT_APP_API } = process.env;
+const api = `${REACT_APP_API}`;
 
 export const AddPost = () => {
   const isAuth = useSelector(selectIsAuth);
