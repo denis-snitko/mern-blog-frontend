@@ -1,12 +1,23 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../../axios';
 
-export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
+export const fetchPosts = createAsyncThunk('posts/fetchPosts',
+  async () => {
   const { data } = await axios.get('/posts');
   return data;
 });
+export const fetchFilteredPosts = createAsyncThunk('posts/fetchFilteredPosts',
+  async (params, { rejectWithValue }) => {
+  try {
+    const { data } = await axios.get(`/tags/${params}`);
+    return data;
+  } catch (err) {
+    return rejectWithValue(err.response.data);
+  }
+});
 
-export const fetchTags = createAsyncThunk('tags/fetchPosts', async () => {
+export const fetchTags = createAsyncThunk('tags/fetchPosts',
+  async () => {
   const { data } = await axios.get('/tags');
   return data;
 });
@@ -45,6 +56,20 @@ const postsSlice = createSlice({
       state.posts.items = [];
       state.posts.status = 'error';
     },
+  
+    [fetchFilteredPosts.pending]: (state) => {
+      state.posts.items = [];
+      state.posts.status = 'loading';
+    },
+    [fetchFilteredPosts.fulfilled]: (state, action) => {
+      state.posts.items = action.payload;
+      state.posts.status = 'loaded';
+    },
+    [fetchFilteredPosts.rejected]: (state) => {
+      state.posts.items = [];
+      state.posts.status = 'error';
+    },
+    
     [fetchTags.pending]: (state) => {
       state.tags.items = [];
       state.tags.status = 'loading';

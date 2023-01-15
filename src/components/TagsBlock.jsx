@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 export const TagsBlock = ({ items }) => {
   
   return (
-    <SideBlock title="Тэги">
+    <SideBlock title="Фильтр по тэгам">
       <List>
         {items.map((name, index) => (
           <Link

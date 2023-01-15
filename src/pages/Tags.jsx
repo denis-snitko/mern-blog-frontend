@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Grid from "@mui/material/Grid";
 
 import { Post } from "../components";
-import { fetchPosts } from "../redux/slices/posts";
+import { fetchFilteredPosts } from "../redux/slices/posts";
 import { useDispatch, useSelector } from "react-redux";
 import { userData } from "../redux/slices/auth";
 import { Typography } from "@mui/material";
@@ -19,8 +19,8 @@ export const Tags = () => {
   const isPostLoading = posts.status === "loading";
   
   useEffect(() => {
-    dispatch(fetchPosts());
-  }, [dispatch]);
+    dispatch(fetchFilteredPosts(tag));
+  }, [tag, dispatch]);
   
   if (isPostLoading) {
     return [...Array(5)].map(((item, index) =>
@@ -37,7 +37,7 @@ export const Tags = () => {
   return (
     <>
       <Typography variant="h4" component="div" mb={4}>
-        Результаты по тэгу <Typography variant="h4" component={"span"}
+        Результаты поиска по тэгу <Typography variant="h4" component={"span"}
         fontWeight={700}>&#171;{tag}&#187;</Typography>
       </Typography>
       <Grid container spacing={4}>
