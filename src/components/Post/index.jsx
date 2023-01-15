@@ -1,4 +1,3 @@
-import React from 'react';
 import clsx from 'clsx';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Clear';
@@ -9,9 +8,9 @@ import CommentIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import styles from './Post.module.scss';
 import { UserInfo } from '../UserInfo';
 import { PostSkeleton } from './Skeleton';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import axios from '../../axios';
-import { fetchPosts } from '../../redux/slices/posts';
+import { deletePost } from '../../redux/slices/posts';
 import { useDispatch } from 'react-redux';
 
 export const Post = ({
@@ -29,6 +28,7 @@ export const Post = ({
    isEditable,
  }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   
   
   if (isLoading) {
@@ -39,7 +39,8 @@ export const Post = ({
     try {
       if (window.confirm('Вы действительно хотите удалить статью?')) {
         await axios.delete(`/posts/${id}`);
-        dispatch(fetchPosts());
+        dispatch(deletePost({ id }));
+        navigate('/');
       }
     } catch (error) {
       console.log(error);
@@ -76,7 +77,7 @@ export const Post = ({
           <ul className={styles.tags}>
             {tags !== '' && tags.map((name) => (
               <li key={name}>
-                <Link to={`/tag/${name}`}>#{name}</Link>
+                <Link to={`/tags/${name}`}>#{name}</Link>
               </li>
             ))}
           </ul>

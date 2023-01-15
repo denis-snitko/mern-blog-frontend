@@ -77,9 +77,9 @@ export const AddPost = () => {
         imageUrl: post?.imageUrl,
       };
       
-      const { data } = isEditing ? await axios.patch(`/posts/${id}`, fields) : await axios.post('/posts', fields);
+      isEditing ? await axios.patch(`/posts/${id}`, fields) : await axios.post('/posts', fields);
       
-      navigate(`/posts/${data._id}`);
+      navigate('/');
     } catch (error) {
       console.log(error);
     } finally {

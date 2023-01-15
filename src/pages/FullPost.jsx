@@ -5,39 +5,43 @@ import { Index } from "../components";
 import { CommentsBlock } from "../components";
 import ReactMarkdown from "react-markdown";
 import axios from "../axios";
+import { useSelector } from "react-redux";
+import { userData } from "../redux/slices/auth";
 
 export const FullPost = () => {
-  const [data, setData] = useState(null);
+  const [post, setPost] = useState(null);
+  const user = useSelector(userData);
   const { id } = useParams();
   
   useEffect(() => {
     axios.get(`/posts/${id}`)
-      .then((res) => setData(res.data))
+      .then((res) => setPost(res.data))
       .catch((error) => {
         console.error(error);
       });
   }, [id]);
   
   
-  if (!data) return <Post isLoading={!data} />;
+  if (!post) return <Post isLoading={!post} />;
   
   return (
     <>
       <Post
-        id={data._id}
-        title={data.title}
-        imageUrl={data.imageUrl}
+        _id={post._id}
+        title={post.title}
+        imageUrl={post.imageUrl}
         author={{
-          avatarUrl: data.author.avatarUrl,
-          fullName: data.author.fullName
+          avatarUrl: post.author.avatarUrl,
+          fullName: post.author.fullName
         }}
-        createdAt={data.createdAt}
-        viewsCount={data.viewsCount}
+        createdAt={post.createdAt}
+        viewsCount={post.viewsCount}
         commentsCount={3}
-        tags={data.tags}
+        tags={post.tags}
         isFullPost
+        isEditable={user?._id === post?.author._id}
       >
-        <ReactMarkdown children={data.text} />
+        <ReactMarkdown children={post.text} />
       </Post>
       <CommentsBlock
         items={[

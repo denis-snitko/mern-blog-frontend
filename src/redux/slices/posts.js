@@ -25,7 +25,14 @@ const initialState = {
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    deletePost: (state, action) => {
+      const { id } = action.payload;
+      state.posts.items = state.posts.items.filter((item) => item._id !== id);
+      
+    },
+  },
+  
   extraReducers: {
     [fetchPosts.pending]: (state) => {
       state.posts.items = [];
@@ -54,4 +61,5 @@ const postsSlice = createSlice({
   },
 });
 
+export const { deletePost } = postsSlice.actions
 export const postsReducer = postsSlice.reducer;
