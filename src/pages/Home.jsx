@@ -5,7 +5,6 @@ import Grid from "@mui/material/Grid";
 
 import { Post } from "../components";
 import { TagsBlock } from "../components";
-import { CommentsBlock } from "../components";
 import { fetchPosts, fetchTags } from "../redux/slices/posts";
 import { useDispatch, useSelector } from "react-redux";
 import { userData } from "../redux/slices/auth";
@@ -74,7 +73,7 @@ export const Home = () => {
                 }}
                 createdAt={post.createdAt}
                 viewsCount={post.viewsCount}
-                commentsCount={3}
+                commentsCount={post.commentsCount}
                 tags={post.tags}
                 isEditable={user?._id === post.author._id}
               />
@@ -94,7 +93,7 @@ export const Home = () => {
                 }}
                 createdAt={post.createdAt}
                 viewsCount={post.viewsCount}
-                commentsCount={3}
+                commentsCount={post.commentsCount}
                 tags={post.tags}
                 isEditable={user?._id === post.author._id}
               />
@@ -103,25 +102,6 @@ export const Home = () => {
         </Grid>
         <Grid xs={12} md={4} item>
           <TagsBlock items={tags.items} />
-          <CommentsBlock
-            items={[
-              {
-                user: {
-                  fullName: "Вася Пупкин",
-                  avatarUrl: "https://mui.com/static/images/avatar/1.jpg"
-                },
-                text: "Это тестовый комментарий"
-              },
-              {
-                user: {
-                  fullName: "Иван Иванов",
-                  avatarUrl: "https://mui.com/static/images/avatar/2.jpg"
-                },
-                text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top"
-              }
-            ]}
-            isLoading={false}
-          />
         </Grid>
       </Grid>
     </>

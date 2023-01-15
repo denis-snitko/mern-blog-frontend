@@ -1,29 +1,38 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Post } from "../components";
-import { Index } from "../components";
-import { CommentsBlock } from "../components";
-import ReactMarkdown from "react-markdown";
-import axios from "../axios";
-import { useSelector } from "react-redux";
-import { userData } from "../redux/slices/auth";
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Post } from '../components';
+import { AddComment } from '../components';
+import { CommentsBlock } from '../components';
+import ReactMarkdown from 'react-markdown';
+import axios from '../axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { userData } from '../redux/slices/auth';
+import { fetchComments } from '../redux/slices/comments';
 
 export const FullPost = () => {
   const [post, setPost] = useState(null);
+  const { comments } = useSelector((state) => state.comments);
+
+  const dispatch = useDispatch();
   const user = useSelector(userData);
   const { id } = useParams();
-  
+
+  const isCommentsLoading = comments.status === "loading";
+
+
   useEffect(() => {
-    axios.get(`/posts/${id}`)
+    axios
+      .get(`/posts/${id}`)
       .then((res) => setPost(res.data))
       .catch((error) => {
         console.error(error);
       });
-  }, [id]);
-  
-  
+
+    dispatch(fetchComments({ id }));
+  }, [dispatch, id]);
+
   if (!post) return <Post isLoading={!post} />;
-  
+
   return (
     <>
       <Post
@@ -32,37 +41,19 @@ export const FullPost = () => {
         imageUrl={post.imageUrl}
         author={{
           avatarUrl: post.author.avatarUrl,
-          fullName: post.author.fullName
+          fullName: post.author.fullName,
         }}
         createdAt={post.createdAt}
         viewsCount={post.viewsCount}
-        commentsCount={3}
+        commentsCount={post.commentsCount}
         tags={post.tags}
         isFullPost
-        isEditable={user?._id === post?.author._id}
-      >
+        isEditable={user?._id === post?.author._id}>
         <ReactMarkdown children={post.text} />
       </Post>
-      <CommentsBlock
-        items={[
-          {
-            user: {
-              fullName: "Вася Пупкин",
-              avatarUrl: "https://mui.com/static/images/avatar/1.jpg"
-            },
-            text: "Это тестовый комментарий 555555"
-          },
-          {
-            user: {
-              fullName: "Иван Иванов",
-              avatarUrl: "https://mui.com/static/images/avatar/2.jpg"
-            },
-            text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top"
-          }
-        ]}
-        isLoading={false}
-      >
-        <Index />
+      
+      <CommentsBlock items={comments.items} isLoading={isCommentsLoading}>
+        {user && <AddComment />}
       </CommentsBlock>
     </>
   );

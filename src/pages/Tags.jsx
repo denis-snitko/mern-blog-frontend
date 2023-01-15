@@ -55,7 +55,7 @@ export const Tags = () => {
               }}
               createdAt={post.createdAt}
               viewsCount={post.viewsCount}
-              commentsCount={3}
+              commentsCount={post.commentsCount}
               tags={post.tags}
               isEditable={user?._id === post.author._id}
             />
