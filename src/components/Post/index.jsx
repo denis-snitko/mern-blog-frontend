@@ -12,6 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from '../../axios';
 import { deletePost } from '../../redux/slices/posts';
 import { useDispatch } from 'react-redux';
+import { formatDate } from "../../helpers/formatDate";
 
 export const Post = ({
    _id,
@@ -69,7 +70,7 @@ export const Post = ({
         />
       )}
       <div className={styles.wrapper}>
-        <UserInfo {...author} additionalText={createdAt} />
+        <UserInfo {...author} additionalText={formatDate(createdAt)} />
         <div className={styles.indention}>
           <h2 className={clsx(styles.title, { [styles.titleFull]: isFullPost })}>
             {isFullPost ? title : <Link to={`/posts/${_id}`}>{title}</Link>}
