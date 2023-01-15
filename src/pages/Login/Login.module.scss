@@ -1,8 +1,13 @@
 .root {
-  width: 400px;
+  max-width: 400px;
+  width: 100%;
   padding: 50px;
   border: 1px solid #dedede;
   margin: 50px auto;
+
+  @media (max-width: 510px) {
+    padding: 50px 24px;
+  }
 }
 
 .field {
