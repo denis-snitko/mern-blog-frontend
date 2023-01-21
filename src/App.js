@@ -8,6 +8,9 @@ function App() {
   const dispatch = useDispatch();
   
   useEffect(() => {
+    if (!window.localStorage.getItem("token")) {
+      return;
+    }
     dispatch(fetchAuth());
   }, [dispatch]);
   
