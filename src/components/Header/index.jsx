@@ -45,7 +45,7 @@ export const Header = () => {
     <div className={styles.root}>
       <Container maxWidth='lg'>
         <div className={styles.inner}>
-          {pathname !== '/' && (
+          {pathname !== '/' && pathname !== '/popular' && (
             <Link className={styles.back} to='/'>
               {String.fromCharCode(8592)} На главную
             </Link>
