@@ -10,12 +10,12 @@
   align-items: center;
   justify-content: space-between;
 
-  @media (max-width: 510px) {
-    flex-direction: column-reverse;
-  }
+  // @media (max-width: 510px) {
+  //   flex-direction: column-reverse;
+  // }
 }
 
-.logo {
+.back {
   border-radius: 4px;
   font-size: 18px;
   font-weight: 700;
@@ -25,9 +25,7 @@
   text-decoration: none;
 
   @media (max-width: 510px) {
-    margin-top: 16px;
-    border: none
-
+   font-size: 14px;
   }
 }
 
@@ -46,7 +44,8 @@
       margin-left: 0;
 
       &:first-child {
-        margin-right: 16px;
+        margin-right: 4px;
+        font-size: 12px;
 
       }
     }
@@ -55,4 +54,9 @@
   a {
     text-decoration: none;
   }
+}
+
+.profile {
+  color: inherit;
+  text-decoration: none;
 }
