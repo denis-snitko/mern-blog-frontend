@@ -1,5 +1,7 @@
 import { Post } from './';
 
+const { REACT_APP_API } = process.env;
+
 export const PostList = ({posts , user}) => {
   return (
     posts.map((post) =>
@@ -7,7 +9,7 @@ export const PostList = ({posts , user}) => {
         key={post._id}
         _id={post._id}
         title={post.title}
-        imageUrl={post.imageUrl}
+        imageUrl={post.imageUrl && `${REACT_APP_API}${post.imageUrl}`}
         author={{
           _id: post.author._id,
           avatarUrl: post.author.avatarUrl,

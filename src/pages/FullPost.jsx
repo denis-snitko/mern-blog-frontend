@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userData } from '../redux/slices/auth';
 import { fetchComments } from '../redux/slices/comments';
 
+const { REACT_APP_API } = process.env;
+
 export const FullPost = () => {
   const [post, setPost] = useState(null);
   const { comments } = useSelector((state) => state.comments);
@@ -41,7 +43,7 @@ export const FullPost = () => {
       <Post
         _id={post._id}
         title={post.title}
-        imageUrl={post.imageUrl}
+        imageUrl={post.imageUrl && `${REACT_APP_API}${post.imageUrl}`}
         author={{
           avatarUrl: post.author.avatarUrl,
           fullName: post.author.fullName,

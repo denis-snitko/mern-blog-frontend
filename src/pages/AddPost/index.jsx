@@ -12,7 +12,6 @@ import 'easymde/dist/easymde.min.css';
 import axios from '../../axios';
 
 const { REACT_APP_API } = process.env;
-const api = `${REACT_APP_API}`;
 
 export const AddPost = () => {
   const isAuth = useSelector(selectIsAuth);
@@ -35,9 +34,8 @@ export const AddPost = () => {
       
       formData.append('image', file);
       const { data } = await axios.post('/upload', formData);
-      const fullImageUrl = `${api}${data.url}`;
       setPost((prevState) => (
-        { ...prevState, imageUrl: fullImageUrl || '' }
+        { ...prevState, imageUrl: data.url || '' }
       ));
     } catch (error) {
       console.log(error);
@@ -86,21 +84,27 @@ export const AddPost = () => {
       setIsLoading(false);
     }
   };
+
+  const getOnePost = async () => {
+    try {
+      setIsLoading(true);
+      const res = await axios.get(`/posts/${id}`);
+      const { data } = await res.data;
+      setPost({
+        title: data.title,
+        text: data.text,
+        tags: data.tags ? data.tags.join(',') : '',
+        imageUrl: data.imageUrl,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   useEffect(() => {
-    if (!id) return;
-    axios.get(`/posts/${id}`).then(res => {
-        setPost({
-          title: res.data.title,
-          text: res.data.text,
-          tags: res.data.tags ? res.data.tags.join(',') : '',
-          imageUrl: res.data.imageUrl,
-        });
-      })
-      .catch((error) => console.log(error))
-      .finally(() => {
-        setIsLoading(false);
-      });
+   getOnePost()
   }, [id]);
   
   if (isLoading) {
@@ -122,7 +126,7 @@ export const AddPost = () => {
           )}
         </div>)
       }
-      {post?.imageUrl && (<img className={styles.image} src={post.imageUrl} alt="Uploaded" />)}
+      {post?.imageUrl && (<img className={styles.image} src={post.imageUrl && `${REACT_APP_API}${post.imageUrl}`} alt="Uploaded" />)}
       <br />
       <br />
       <TextField

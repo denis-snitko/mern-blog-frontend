@@ -8,6 +8,8 @@ import { userData } from "../redux/slices/auth";
 import { Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 
+const { REACT_APP_API } = process.env;
+
 export const Tags = () => {
   const dispatch = useDispatch();
   const user = useSelector(userData);
@@ -47,7 +49,7 @@ export const Tags = () => {
               key={post._id}
               _id={post._id}
               title={post.title}
-              imageUrl={post.imageUrl}
+              imageUrl={post.imageUrl && `${REACT_APP_API}${post.imageUrl}`}
               author={{
                 _id: post.author._id,
                 avatarUrl: post.author.avatarUrl,
