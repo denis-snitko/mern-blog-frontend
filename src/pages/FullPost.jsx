@@ -19,15 +19,18 @@ export const FullPost = () => {
 
   const isCommentsLoading = comments.status === "loading";
 
+  const getOnePost = async () => {
+    try {
+      const res = await axios.get(`/posts/${id}`);
+      const { data } = await res.data;
+      setPost(data)
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    axios
-      .get(`/posts/${id}`)
-      .then((res) => setPost(res.data))
-      .catch((error) => {
-        console.error(error);
-      });
-
+    getOnePost();
     dispatch(fetchComments({ id }));
   }, [dispatch, id]);
 

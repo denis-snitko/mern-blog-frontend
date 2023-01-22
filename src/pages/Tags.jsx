@@ -27,7 +27,7 @@ export const Tags = () => {
       <Post key={index} isLoading={isPostLoading} />));
   }
   
-  if (posts.items.length === 0) {
+  if (posts.data.length === 0) {
     return <Typography variant="h4" component="div">Нет статей по тэгу
       <Typography variant="h4" component={"span"}
         fontWeight={700}>&#171;{tag}&#187;</Typography>
@@ -42,7 +42,7 @@ export const Tags = () => {
       </Typography>
       <Grid container spacing={4}>
         <Grid xs={12} item>
-          {posts.items.map((post) =>
+          {posts.data.map((post) =>
             <Post
               key={post._id}
               _id={post._id}

@@ -1,13 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../../axios';
 
-export const fetchPosts = createAsyncThunk('posts/fetchPosts',
-  async (url) => {
-  const { data } = await axios.get(url);
+export const fetchPosts = createAsyncThunk('posts/fetchPosts', async ({ url, query }) => {
+  const { data } = await axios.get(url, { params: { ...query } });
   return data;
 });
-export const fetchFilteredPosts = createAsyncThunk('posts/fetchFilteredPosts',
-  async (params, { rejectWithValue }) => {
+export const fetchFilteredPosts = createAsyncThunk('posts/fetchFilteredPosts', async (params, { rejectWithValue }) => {
   try {
     const { data } = await axios.get(`/tags/${params}`);
     return data;
@@ -16,15 +14,14 @@ export const fetchFilteredPosts = createAsyncThunk('posts/fetchFilteredPosts',
   }
 });
 
-export const fetchTags = createAsyncThunk('tags/fetchPosts',
-  async () => {
+export const fetchTags = createAsyncThunk('tags/fetchPosts', async () => {
   const { data } = await axios.get('/tags');
   return data;
 });
 
 const initialState = {
   posts: {
-    items: [],
+    data: [],
     status: 'loading',
   },
   tags: {
@@ -42,34 +39,34 @@ const postsSlice = createSlice({
       state.posts.items = state.posts.items.filter((item) => item._id !== id);
     },
   },
-  
+
   extraReducers: {
     [fetchPosts.pending]: (state) => {
-      state.posts.items = [];
+      state.posts.data = [];
       state.posts.status = 'loading';
     },
     [fetchPosts.fulfilled]: (state, action) => {
-      state.posts.items = action.payload;
+      state.posts = action.payload;
       state.posts.status = 'loaded';
     },
     [fetchPosts.rejected]: (state) => {
-      state.posts.items = [];
+      state.posts.data = [];
       state.posts.status = 'error';
     },
-  
+
     [fetchFilteredPosts.pending]: (state) => {
-      state.posts.items = [];
+      state.posts.data = [];
       state.posts.status = 'loading';
     },
     [fetchFilteredPosts.fulfilled]: (state, action) => {
-      state.posts.items = action.payload;
+      state.posts = action.payload;
       state.posts.status = 'loaded';
     },
     [fetchFilteredPosts.rejected]: (state) => {
-      state.posts.items = [];
+      state.posts.data = [];
       state.posts.status = 'error';
     },
-    
+
     [fetchTags.pending]: (state) => {
       state.tags.items = [];
       state.tags.status = 'loading';
@@ -85,5 +82,5 @@ const postsSlice = createSlice({
   },
 });
 
-export const { deletePost } = postsSlice.actions
+export const { deletePost } = postsSlice.actions;
 export const postsReducer = postsSlice.reducer;

@@ -1,8 +1,8 @@
 import { Post } from './';
 
-export const PostList = ({posts, user}) => {
+export const PostList = ({posts , user}) => {
   return (
-    posts.items.map((post) =>
+    posts.map((post) =>
       <Post
         key={post._id}
         _id={post._id}

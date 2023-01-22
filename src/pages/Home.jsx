@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userData } from '../redux/slices/auth';
 import { Typography } from '@mui/material';
 import { PostList } from '../components/Post/PostList';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 
 export const Home = () => {
   const dispatch = useDispatch();
@@ -21,6 +21,9 @@ export const Home = () => {
   const { posts, tags } = useSelector((state) => state.posts);
 
   const [tab, setTab] = useState(0);
+
+  const [searchParams] = useSearchParams();
+  const currentParams = Object.fromEntries([...searchParams]);
 
   const isPostLoading = posts.status === 'loading';
 
@@ -44,20 +47,20 @@ export const Home = () => {
 
   useEffect(() => {
     if (pathname === '/') {
-      dispatch(fetchPosts('/posts'));
+      dispatch(fetchPosts({url: '/posts', query: currentParams}));
       setTab(0);
     } else if (pathname === '/popular') {
-      dispatch(fetchPosts('/posts/popular'));
+      dispatch(fetchPosts({url: '/posts/popular', query: currentParams}));
       setTab(1);
     }
     dispatch(fetchTags());
-  }, [dispatch, pathname]);
+  }, [searchParams, dispatch, pathname]);
 
   if (isPostLoading) {
     return [...Array(5)].map((item, index) => <Post key={index} isLoading={isPostLoading} />);
   }
 
-  if (posts.items.length === 0) {
+  if (posts.data.length === 0) {
     return <Typography variant='h4'>Статей нет</Typography>;
   }
 
@@ -70,10 +73,10 @@ export const Home = () => {
       <Grid container spacing={4}>
         <Grid xs={12} md={8} item>
           <TabPanel value={tab} index={0}>
-            <PostList posts={posts} user={user} />
+            <PostList posts={posts.data} user={user} />
           </TabPanel>
           <TabPanel value={tab} index={1}>
-            <PostList posts={posts} user={user} />
+            <PostList posts={posts.data} user={user} />
           </TabPanel>
         </Grid>
         <Grid xs={12} md={4} item>
